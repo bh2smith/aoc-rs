@@ -112,6 +112,7 @@ macro_rules! advent {
 advent!(
     year2022 {
         day01,
+        day02,
         //        day02,
     },
     year2020 {
