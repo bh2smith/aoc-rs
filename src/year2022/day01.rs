@@ -7,7 +7,7 @@ pub fn solve(input: &str, size: usize) -> i64 {
     let mut elf_sums = vec![];
     split_input.iter().for_each(|item| {
         if item == &"" {
-            elf_sums.push(cur_sum.clone());
+            elf_sums.push(cur_sum);
             cur_sum = 0;
         } else {
             cur_sum += i64::from_str(item).unwrap();

@@ -87,7 +87,7 @@ impl Segment2 {
 pub fn parse_line(input: &str) -> Vec<(char, i64)> {
     input
         .split(',')
-        .map(|s| (s.chars().nth(0).unwrap(), i64::from_str(&s[1..]).unwrap()))
+        .map(|s| (s.chars().next().unwrap(), i64::from_str(&s[1..]).unwrap()))
         .collect()
 }
 
