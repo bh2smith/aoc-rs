@@ -1,4 +1,6 @@
 mod client;
+mod linked_list;
+mod nary_tree;
 mod util;
 
 use crate::client::Client;
