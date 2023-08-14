@@ -1,11 +1,6 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[derive(Debug)]
-enum FileSystemEntry {
-    Directory(Directory),
-    File(File),
-}
 
 #[derive(Debug)]
 struct Directory {
