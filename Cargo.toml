@@ -5,14 +5,14 @@ authors = ["Nicholas Lordello <nlordell@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-arrayvec = "0.4"
-bitflags = "1"
+arrayvec = "0.7.4"
+bitflags = "2.3.3"
 chrono = "0.4"
 clap = "2"
 failure = "0.1"
 failure_derive = "0.1"
-itertools = "0.10.0"
+itertools = "0.11.0"
 lazy_static = "1"
-nalgebra = "0.24"
+nalgebra = "0.32.3"
 native-tls = "0.2"
 regex = "1"
