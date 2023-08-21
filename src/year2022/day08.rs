@@ -1,16 +1,9 @@
+use crate::util::Direction;
 use std::collections::{HashMap, HashSet};
 use std::convert::TryInto;
 
 type TreeHeights = Vec<Vec<u32>>;
 type Visibility = HashMap<Pair, HashSet<Direction>>;
-
-#[derive(Debug, Eq, Hash, PartialEq)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
 
 type Pair = (usize, usize);
 

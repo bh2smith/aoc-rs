@@ -4,6 +4,26 @@ use std::ops::{Index, IndexMut};
 use std::str::{self, FromStr};
 use std::usize;
 
+#[derive(Debug, Eq, Hash, PartialEq)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+impl Direction {
+    pub fn from_char(ch: char) -> Self {
+        match ch {
+            'D' => Direction::Down,
+            'R' => Direction::Right,
+            'L' => Direction::Left,
+            'U' => Direction::Up,
+            v => panic!("Unexpected direction character! {}", v),
+        }
+    }
+}
+
 pub fn split(input: &str) -> impl '_ + Iterator<Item = &'_ str> {
     input.trim().split('\n').map(|s| s.trim())
 }
