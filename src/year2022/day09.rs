@@ -188,7 +188,7 @@ impl Move {
         if let Some(mv) = move_2 {
             result.push(mv);
         }
-        if result.len() > 0 {
+        if result.is_empty() {
             return Some(result);
         }
         None
