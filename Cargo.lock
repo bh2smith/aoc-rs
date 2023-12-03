@@ -47,6 +47,7 @@ dependencies = [
  "failure_derive",
  "itertools",
  "lazy_static",
+ "maplit",
  "nalgebra",
  "native-tls",
  "regex",
@@ -276,6 +277,12 @@ checksum = "fcf3805d4480bb5b86070dcfeb9e2cb2ebc148adb753c5cca5f884d1d65a42b2"
 dependencies = [
  "cfg-if 0.1.10",
 ]
+
+[[package]]
+name = "maplit"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e2e65a1a2e43cfcb47a895c4c8b10d1f4a61097f9f254f183aee60cad9c651d"
 
 [[package]]
 name = "matrixmultiply"

@@ -130,6 +130,6 @@ mod tests {
             Err(_) => return, // skip test for non-configured systems
         };
         let input = client.get_input(2018, 1).unwrap();
-        assert!(input.len() > 0);
+        assert!(!input.is_empty());
     }
 }
