@@ -164,6 +164,7 @@ advent!(
         day02,
         day03,
         day04,
+        day09,
         //        day02,
         //        day03,
         //        day04,
