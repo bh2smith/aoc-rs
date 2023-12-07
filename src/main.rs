@@ -118,6 +118,7 @@ advent!(
         day04,
         day05,
         day06,
+        day07,
         //poop
     },
     year2022 {
