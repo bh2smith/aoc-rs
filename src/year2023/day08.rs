@@ -30,10 +30,7 @@ fn parse_input(input: &str) -> (Vec<char>, HashMap<&str, Direction>) {
 fn starting_points(places: Vec<&str>) -> Vec<&str> {
     places
         .into_iter()
-        .filter_map(|p| match p.chars().nth(2).unwrap() {
-            'A' => Some(p),
-            _ => None,
-        })
+        .filter(|p| p.chars().nth(2).unwrap() == 'A')
         .collect()
 }
 
