@@ -1,19 +1,25 @@
-
-use std::collections::{HashSet, HashMap};
 use maplit::hashset;
+use std::collections::{HashMap, HashSet};
 
 use crate::util::{self, Grid};
 use nalgebra::Point2;
 
 pub fn puzzle1(input: &str) -> u32 {
-    let engine = Engine {grid: Grid::from_layout(input)};
-    engine.relevant_numbers(None).iter().map(|builder| builder.value()).sum()
+    let engine = Engine {
+        grid: Grid::from_layout(input),
+    };
+    engine
+        .relevant_numbers(None)
+        .iter()
+        .map(|builder| builder.value())
+        .sum()
 }
 
-
 pub fn puzzle2(input: &str) -> u32 {
-    let engine = Engine {grid: Grid::from_layout(input)};
-    let numbers = engine.relevant_numbers(Some(hashset!{'*'}));
+    let engine = Engine {
+        grid: Grid::from_layout(input),
+    };
+    let numbers = engine.relevant_numbers(Some(hashset! {'*'}));
     let mut gears = HashMap::new();
     let stars = engine.star_positions();
     for star_position in stars {
@@ -25,13 +31,19 @@ pub fn puzzle2(input: &str) -> u32 {
         }
     }
     // println!("Gears {:?}", gears);
-    gears.iter().filter_map(|(_, numbers)| {if numbers.len() == 2 {
-        return Some(numbers[0] * numbers[1]);
-    } None}).sum::<u32>()
+    gears
+        .iter()
+        .filter_map(|(_, numbers)| {
+            if numbers.len() == 2 {
+                return Some(numbers[0] * numbers[1]);
+            }
+            None
+        })
+        .sum::<u32>()
 }
 
 struct Engine {
-    grid: Grid
+    grid: Grid,
 }
 #[derive(Clone, Debug, PartialEq)]
 struct NumberBuilder {
@@ -39,7 +51,7 @@ struct NumberBuilder {
     row: usize,
     start: usize,
     end: usize,
-    special_adjacents: HashSet<char>
+    special_adjacents: HashSet<char>,
 }
 
 impl NumberBuilder {
@@ -67,7 +79,7 @@ impl NumberBuilder {
 }
 
 impl Engine {
-    fn adjacent(&self, pos: Point2<usize>) -> impl '_  + Iterator<Item = u8> {
+    fn adjacent(&self, pos: Point2<usize>) -> impl '_ + Iterator<Item = u8> {
         util::adjacent8(pos).filter_map(move |p| self.grid.get(p))
     }
 
@@ -88,21 +100,27 @@ impl Engine {
             }
 
             if val.is_ascii_digit() {
-                // when a digit is 
+                // when a digit is
                 match current_builder {
                     Some(ref mut builder) => {
                         builder.number_str += &String::from_utf8(vec![val]).expect("is good");
                         builder.end = pos[0];
-                        let special_chars = special_charset(self.adjacent(pos).collect(), explicitly_special.clone());
+                        let special_chars = special_charset(
+                            self.adjacent(pos).collect(),
+                            explicitly_special.clone(),
+                        );
                         builder.special_adjacents.extend(special_chars);
-                    },
+                    }
                     None => {
                         current_builder = Some(NumberBuilder {
                             number_str: String::from_utf8(vec![val]).expect("is good"),
                             row: current_row,
                             start: pos[0],
                             end: pos[0],
-                            special_adjacents: special_charset(self.adjacent(pos).collect(), explicitly_special.clone()),
+                            special_adjacents: special_charset(
+                                self.adjacent(pos).collect(),
+                                explicitly_special.clone(),
+                            ),
                         })
                     }
                 }
@@ -111,7 +129,6 @@ impl Engine {
                     if builder.has_special_adjacents() {
                         res.push(builder.clone());
                     }
-                    
                 }
                 current_builder = None;
             }
@@ -133,7 +150,13 @@ impl Engine {
 fn special_charset(values: Vec<u8>, explicitly_special: Option<HashSet<char>>) -> HashSet<char> {
     let mut res = HashSet::new();
     for v in values {
-        res.insert(String::from_utf8(vec![v]).expect("is good").chars().next().expect("always one char"));
+        res.insert(
+            String::from_utf8(vec![v])
+                .expect("is good")
+                .chars()
+                .next()
+                .expect("always one char"),
+        );
     }
     // When explicitly special characters are provided we keep only those, otherwise, we remove all digits and .
     if let Some(special_chars) = explicitly_special {
@@ -151,7 +174,6 @@ mod tests {
     use std::collections::HashSet;
 
     use super::NumberBuilder;
-
 
     const SAMPLE_INPUT: &str = r"467..114..
 ...*......
@@ -199,5 +221,4 @@ mod tests {
         assert!(num.is_adjacent([3, 2].into()));
         assert!(!num.is_adjacent([4, 2].into()));
     }
-
 }
