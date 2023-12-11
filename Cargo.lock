@@ -47,6 +47,7 @@ dependencies = [
  "failure_derive",
  "hex",
  "hex-literal",
+ "integer-partitions",
  "itertools",
  "lazy_static",
  "maplit",
@@ -332,6 +333,12 @@ dependencies = [
  "equivalent",
  "hashbrown",
 ]
+
+[[package]]
+name = "integer-partitions"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0426629a21b65da94fdbb6d104900da8af7b3572c82f023813fb2f4f08de1a18"
 
 [[package]]
 name = "itertools"
