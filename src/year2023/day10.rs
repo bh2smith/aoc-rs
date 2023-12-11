@@ -1,37 +1,7 @@
 use colored::*;
 use std::collections::{HashMap, HashSet};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-struct Point {
-    x: i32,
-    y: i32,
-}
-
-impl std::ops::Add for Point {
-    type Output = Self;
-    fn add(self, rhs: Self) -> Self {
-        Self {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
-    }
-}
-
-impl std::ops::Sub for Point {
-    type Output = Self;
-    fn sub(self, rhs: Self) -> Self {
-        Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
-    }
-}
-
-impl Point {
-    fn new(x: i32, y: i32) -> Self {
-        Self { x, y }
-    }
-}
+use crate::util::Point;
 
 fn openings(c: char) -> Vec<Point> {
     match c {
@@ -145,7 +115,7 @@ fn parse_input(input: &str) -> HashMap<Point, char> {
         .flat_map(|(y, line)| {
             line.chars()
                 .enumerate()
-                .map(move |(x, c)| (Point::new(x as i32, y as i32), c))
+                .map(move |(x, c)| (Point::new(x as i64, y as i64), c))
         })
         .collect::<HashMap<Point, char>>()
 }
