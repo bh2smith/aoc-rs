@@ -1,38 +1,32 @@
-use std::cmp::Ordering;
+use std::collections::HashMap;
 
-#[derive(Default)]
+use itertools::Itertools;
+
+const SECONDS: u32 = 2503;
+#[derive(Default, PartialEq, Eq, Hash, Debug)]
 struct Reindeer {
+    name: String,
     fly: u32,
     rest: u32,
     speed: u32,
-    second: u32,
-    position: u32,
 }
 impl Reindeer {
-    fn new(fly: u32, rest: u32, speed: u32) -> Self {
+    fn from(row: &str) -> Self {
+        let items = row.split_whitespace().collect_vec();
+
         Self {
-            fly,
-            rest,
-            speed,
-            ..Default::default()
-        }
-    }
-    fn increment_position(&mut self) {
-        self.second += 1;
-        let k = self.second / (self.fly + self.rest);
-        let diff = self.second - k * (self.fly + self.rest);
-        match diff > 0 && diff <= self.fly {
-            true => self.position += self.speed,
-            false => (),
+            name: items[0].to_string(),
+            speed: items[3].parse().unwrap(),
+            fly: items[6].parse().unwrap(),
+            rest: items[13].parse().unwrap(),
         }
     }
     fn position_at_second(&self, second: u32) -> u32 {
         let Reindeer {
+            name: _,
             fly,
             rest,
             speed,
-            second: _,
-            position: _,
         } = self;
         if second <= *fly {
             return speed * second;
@@ -48,68 +42,31 @@ impl Reindeer {
 }
 
 pub fn puzzle1(input: &str) -> u32 {
-    let seconds = input.parse::<u32>().unwrap();
-    let comet = Reindeer::new(10, 127, 14);
-    let dancer = Reindeer::new(11, 162, 16);
-    comet
-        .position_at_second(seconds)
-        .max(dancer.position_at_second(seconds))
+    input
+        .trim()
+        .split('\n')
+        .map(|row| {
+            let reindeer = Reindeer::from(row);
+            reindeer.position_at_second(SECONDS)
+        })
+        .max()
+        .unwrap()
 }
 
 pub fn puzzle2(input: &str) -> u32 {
-    let seconds = input.parse::<u32>().unwrap();
-    let mut comet = Reindeer::new(10, 127, 14);
-    let mut dancer = Reindeer::new(11, 162, 16);
-
-    let mut d_points = 0;
-    let mut c_points = 0;
-    for second in 1..seconds + 1 {
-        comet.increment_position();
-        dancer.increment_position();
-        let d_pos = dancer.position;
-        let c_pos = comet.position;
-
-        match c_pos.cmp(&d_pos) {
-            Ordering::Greater => c_points += 1,
-            Ordering::Less => d_points += 1,
-            Ordering::Equal => {
-                println!("\n*** Tied at {second}");
-                d_points += 1;
-                c_points += 1;
+    let reindeer = input.trim().split('\n').map(Reindeer::from);
+    let mut points = HashMap::new();
+    for second in 1..SECONDS + 1 {
+        let leading_position = reindeer
+            .clone()
+            .map(|r| r.position_at_second(second))
+            .max()
+            .unwrap();
+        for r in reindeer.clone() {
+            if r.position_at_second(second) == leading_position {
+                *points.entry(r).or_insert(0) += 1;
             }
         }
-        assert_eq!(
-            comet.position_at_second(second),
-            comet.position,
-            "comet failure"
-        );
-        assert_eq!(
-            dancer.position_at_second(second),
-            dancer.position,
-            "dasher failure"
-        );
-        println!("Second {second}: D at {d_pos}, C at {c_pos} with {d_points} vs {c_points}");
     }
-
-    d_points.max(c_points)
-}
-
-#[cfg(test)]
-mod tests {
-    const SAMPLE_INPUT: &str = "1000";
-    const REAL_INPUT: &str = "2503";
-
-    #[test]
-    fn puzzle1() {
-        assert_eq!(super::puzzle1(SAMPLE_INPUT), 1120);
-        assert_eq!(super::puzzle1(REAL_INPUT), 2660);
-    }
-
-    #[test]
-    fn puzzle2() {
-        assert_eq!(super::puzzle2(SAMPLE_INPUT), 689);
-        // Too high!
-        // 1351 (too low)
-        assert_eq!(super::puzzle2(REAL_INPUT), 1564);
-    }
+    points.into_values().max().unwrap()
 }
