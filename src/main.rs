@@ -17,7 +17,7 @@ fn main() {
                 .short("y")
                 .long("year")
                 .value_name("YEAR")
-                .default_value("2022")
+                .default_value("2023")
                 .takes_value(true)
                 .validator(validate::<i32>),
         )
@@ -28,6 +28,7 @@ fn main() {
         )
         .arg(
             Arg::with_name("days")
+                .short("d")
                 .value_name("DAY")
                 .required(true)
                 .multiple(true)
@@ -110,6 +111,27 @@ macro_rules! advent {
 }
 
 advent!(
+    year2023 {
+        day01,
+        day02,
+        day03,
+        day04,
+        day05,
+        day06,
+        day07,
+        day08,
+        day09,
+        day10,
+        day11,
+        day12,
+        day13,
+        day14,
+        day15,
+        day16,
+        // day17,
+        // day18,
+        // day19,
+    },
     year2022 {
         day01,
         day02,
@@ -124,7 +146,7 @@ advent!(
     },
     year2020 {
         day01,
-        //        day02,
+        //day02,
     },
     year2019 {
         day01,
@@ -136,27 +158,5 @@ advent!(
     year2018 {
         day01,
         //        day02,
-        //        day03,
-        //        day04,
-        //        day05,
-        //        day06,
-        //        day07,
-        //        day08,
-        //        day09,
-        //        day10,
-        //        day11,
-        //        day12,
-        //        day13,
-        //        day14,
-        //        day15,
-        //        day16,
-        //        day17,
-        //        day18,
-        //        day19,
-        //        day20,
-        //        day22,
-        //        day23,
-        //        day24,
-        //        day25,
     },
 );
