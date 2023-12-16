@@ -40,7 +40,7 @@ impl Step {
     }
 
     fn hash(&self) -> usize {
-        hash(&self.label) as usize
+        hash(&self.label)
     }
 }
 
@@ -87,7 +87,7 @@ impl Boxes {
     fn add(&mut self, hash: usize, label: &str, focal_length: usize) {
         // Look to see if it already exists.
         for l in self.boxes[hash].iter_mut() {
-            if &l.label == label {
+            if l.label == label {
                 // If we find it, we just need to update the focal
                 // length.
                 l.focal_length = focal_length;
@@ -102,7 +102,7 @@ impl Boxes {
     fn remove(&mut self, hash: usize, label: &str) {
         // Try to find it.
         for (i, l) in self.boxes[hash].iter().enumerate() {
-            if &l.label == label {
+            if l.label == label {
                 // If we find it, we need to remove it.
                 self.boxes[hash].remove(i);
                 return;
