@@ -2,46 +2,39 @@ mod client;
 mod util;
 
 use crate::client::Client;
-use clap::{App, Arg};
-use std::fmt::Display;
-use std::str::FromStr;
+use clap::{Arg, Command};
 use std::time::Instant;
 
 fn main() {
-    let matches = App::new("aoc")
+    let matches = Command::new("aoc")
         .version("0.1")
         .about("Execute Advent of Code problems")
         .author("Nicholas Lordello")
         .arg(
-            Arg::with_name("year")
-                .short("y")
+            Arg::new("year")
+                .short('y')
                 .long("year")
                 .value_name("YEAR")
                 .default_value("2023")
-                .takes_value(true)
-                .validator(validate::<i32>),
+                .value_parser(clap::value_parser!(i32)), // Replace validator()
         )
+        .arg(Arg::new("show-time").long("show-time"))
         .arg(
-            Arg::with_name("show-time")
-                .long("show-time")
-                .takes_value(false),
-        )
-        .arg(
-            Arg::with_name("days")
-                .short("d")
+            Arg::new("days")
+                .short('d') // Short flags now use single quotes
                 .value_name("DAY")
                 .required(true)
-                .multiple(true)
-                .validator(validate::<i32>),
+                .num_args(1..)
+                .value_parser(clap::value_parser!(i32)), // Replace validator()
         )
         .get_matches();
 
-    let year: i32 = matches.value_of("year").unwrap().parse().unwrap();
-    let show_time = matches.is_present("show-time");
+    let year: i32 = *matches.get_one::<i32>("year").expect("year is required");
+    let show_time = matches.get_flag("show-time");
     let days: Vec<i32> = matches
-        .values_of("days")
-        .unwrap()
-        .map(|d| d.parse::<i32>().unwrap())
+        .get_many::<i32>("days")
+        .unwrap_or_default()
+        .copied() // `get_many()` returns references, so we use `.copied()`
         .collect();
 
     let client = Client::from_env().expect("failed to create adventofcode.com client");
@@ -63,17 +56,6 @@ fn main() {
 
         println!("  puzzle 1: {}", answers.0);
         println!("  puzzle 2: {}", answers.1);
-    }
-}
-
-fn validate<V: FromStr>(s: String) -> Result<(), String>
-where
-    V: FromStr,
-    V::Err: Display,
-{
-    match V::from_str(&s) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e.to_string()),
     }
 }
 

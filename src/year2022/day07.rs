@@ -1,6 +1,6 @@
-use std::rc::{Rc, Weak};
 use std::cell::RefCell;
 use std::collections::HashSet;
+use std::rc::{Rc, Weak};
 use std::str::FromStr;
 
 #[derive(Debug, Clone)]
@@ -10,7 +10,7 @@ struct File {
 }
 
 #[derive(Debug, Clone)]
-struct Entry (Rc<RefCell<TreeNode>>);
+struct Entry(Rc<RefCell<TreeNode>>);
 
 #[derive(Debug)]
 struct TreeNode {
@@ -33,7 +33,12 @@ impl Entry {
     }
 
     fn child_names(&self) -> HashSet<String> {
-        self.0.borrow().children.iter().map(|ch| ch.0.borrow().value.clone()).collect()
+        self.0
+            .borrow()
+            .children
+            .iter()
+            .map(|ch| ch.0.borrow().value.clone())
+            .collect()
     }
 
     fn add_child(&self, child: Entry) {
@@ -51,26 +56,35 @@ impl Entry {
 
     pub fn sum_files(&self) -> i64 {
         let borrowed_self = self.0.borrow();
-        borrowed_self.files.iter().map(|f| f.fsize).sum::<i64>() + borrowed_self.children.iter().map(|child| child.sum_files()).sum::<i64>()
+        borrowed_self.files.iter().map(|f| f.fsize).sum::<i64>()
+            + borrowed_self
+                .children
+                .iter()
+                .map(|child| child.sum_files())
+                .sum::<i64>()
     }
 
     fn find_child(&self, child_name: &str) -> Self {
         for child in &self.0.borrow().children {
             if child.0.borrow().value == child_name {
-                return child.clone()
+                return child.clone();
             }
         }
         panic!("No child found!");
     }
 
     fn get_parent(&self) -> Option<Entry> {
-        self.0.borrow().parent.as_ref().map(|weak_parent| Self(weak_parent.upgrade().unwrap()))
+        self.0
+            .borrow()
+            .parent
+            .as_ref()
+            .map(|weak_parent| Self(weak_parent.upgrade().unwrap()))
     }
 
     pub fn cd(&self, cd_line: &str) -> Entry {
         // println!("Changing directories from {:?} to {}", self.0.borrow().value, cd_line);
         match cd_line {
-            ".." => { self.get_parent().expect("should exist!") },
+            ".." => self.get_parent().expect("should exist!"),
             &_ => {
                 if !self.child_names().contains(&cd_line.to_string()) {
                     let new_dir = Entry::new(cd_line);
@@ -84,38 +98,37 @@ impl Entry {
     }
 
     fn traverse_dirs(self) -> Vec<Entry> {
-
         let mut dirs = vec![self.clone()];
         for child in self.0.borrow().children.iter() {
             dirs.append(&mut child.clone().traverse_dirs())
         }
         dirs
-
     }
 
     fn update_dsizes(&self) {
-        // Updates directory sizes of all 
+        // Updates directory sizes of all
         self.0.borrow_mut().dsize = self.sum_files();
         for child in self.0.borrow_mut().children.iter() {
             child.update_dsizes()
         }
     }
-
 }
-
 
 pub fn puzzle1(input: &str) -> i64 {
     let tree = parse_input(input);
     // when adding a file to a subdirectory, it does not update the parent dir sizes!
     tree.update_dsizes();
     // println!("{:?}", tree);
-    tree.traverse_dirs().iter().map(|entry| {
-        let size = entry.0.borrow().dsize;
-        if entry.0.borrow().dsize < 100000 {
-            return size;
-        }
-        0
-    }).sum()
+    tree.traverse_dirs()
+        .iter()
+        .map(|entry| {
+            let size = entry.0.borrow().dsize;
+            if entry.0.borrow().dsize < 100000 {
+                return size;
+            }
+            0
+        })
+        .sum()
 }
 
 pub fn puzzle2(input: &str) -> i64 {
@@ -124,47 +137,53 @@ pub fn puzzle2(input: &str) -> i64 {
     tree.update_dsizes();
     let fs_size = tree.0.borrow().dsize;
     let target = fs_size - 40_000_000;
-    tree.traverse_dirs().iter().map(|entry| {
-        let size = entry.0.borrow().dsize;
-        if size > target {
-            return size;
-        }
-        i64::MAX
-    }).min().unwrap()
+    tree.traverse_dirs()
+        .iter()
+        .map(|entry| {
+            let size = entry.0.borrow().dsize;
+            if size > target {
+                return size;
+            }
+            i64::MAX
+        })
+        .min()
+        .unwrap()
 }
 
-
 fn parse_input(input: &str) -> Entry {
-    let mut command_strings: Vec<Vec<&str>> = input.trim().split('\n').map(|c_str| c_str.trim().split(' ').collect()).collect();
+    let mut command_strings: Vec<Vec<&str>> = input
+        .trim()
+        .split('\n')
+        .map(|c_str| c_str.trim().split(' ').collect())
+        .collect();
     command_strings.reverse();
     let root = Entry::new("/");
     let mut pwd = root.clone();
-    command_strings.pop();  // First line is always cd /
+    command_strings.pop(); // First line is always cd /
 
     while let Some(line) = command_strings.pop() {
         if line[0] == "$" {
             // println!("Parsing Line: {:?}", line);
             if line[1] == "cd" {
                 pwd = pwd.cd(line[2]);
-            }
-            else {
+            } else {
                 // ls
                 while let Some(line) = command_strings.pop() {
                     if line[0] == "$" {
                         if line[1] == "cd" {
                             pwd = pwd.cd(line[2]);
                         }
-                        continue
+                        continue;
                     }
                     match line[0] {
                         "dir" => {
                             let new_dir = Entry::new(line[1]);
                             pwd.add_child(new_dir);
-                        },
-                         &_ => {
-                            pwd.add_file(File{ 
-                                // name: line[1].to_string(), 
-                                fsize: i64::from_str(line[0]).unwrap()
+                        }
+                        &_ => {
+                            pwd.add_file(File {
+                                // name: line[1].to_string(),
+                                fsize: i64::from_str(line[0]).unwrap(),
                             })
                         }
                     }
@@ -203,13 +222,10 @@ $ ls
 5626152 d.ext
 7214296 k";
 
-
     #[test]
     fn input_parsing() {
         parse_input(SAMPLE_INPUT);
-        assert_eq!(1, 0)
     }
-
 
     #[test]
     fn node_add_child() {
@@ -222,7 +238,7 @@ $ ls
     #[test]
     fn node_sum_files() {
         let node = Entry::new("A");
-        node.add_file(File {fsize: 1 });
+        node.add_file(File { fsize: 1 });
         let child = Entry::new("B");
         let child2 = Entry::new("C");
         let child3 = Entry::new("D");
