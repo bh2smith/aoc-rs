@@ -1,5 +1,4 @@
 use failure::Error;
-use failure_derive::Fail;
 use native_tls::TlsConnector;
 use std::collections::HashMap;
 use std::env::{self, VarError};
@@ -107,15 +106,15 @@ impl Client {
     }
 }
 
-#[derive(Debug, Fail)]
+#[derive(Debug, thiserror::Error)]
 pub enum HttpError {
-    #[fail(display = "unexpected end of stream")]
+    #[error("unexpected end of stream")]
     UnexpectedEndOfStream,
-    #[fail(display = "invalid HTTP status line format")]
+    #[error("invalid HTTP status line format")]
     InvalidStatusLine,
-    #[fail(display = "invalid HTTP header format")]
+    #[error("invalid HTTP header format")]
     InvalidHeader,
-    #[fail(display = "HTTP error code {}", _0)]
+    #[error("HTTP error code {0}")]
     StatusCode(i32),
 }
 
