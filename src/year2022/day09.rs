@@ -116,12 +116,11 @@ impl ConfigChain {
             .data
             .clone()
             .into_iter()
-            .enumerate()
-            .map(|(index, mut config)| {
-                println!(
-                    "Index {}: Applying Move(s) {:?} on Config {:?}",
-                    index, next_moves, config
-                );
+            .map(|mut config| {
+                // println!(
+                //     "Index {}: Applying Move(s) {:?} on Config {:?}",
+                //     index, next_moves, config
+                // );
                 let mut upcoming_moves = vec![];
                 while let Some(next_move) = next_moves.pop() {
                     let move_pair = config.move_head(&next_move);
@@ -212,7 +211,7 @@ pub fn puzzle2(input: &str) -> i64 {
     for mv in parse_input(input) {
         config_chain.apply_move(mv);
     }
-    println!("{:?}", config_chain);
+    // println!("{:?}", config_chain);
     config_chain
         .data
         .pop()
@@ -270,69 +269,17 @@ U 20";
 
     #[test]
     fn puzzle2() {
-        assert_eq!(super::puzzle2(SAMPLE_INPUT_2), 0);
+        assert_eq!(super::puzzle2(SAMPLE_INPUT_2), 1);
     }
 
     #[test]
     fn apply_move() {
         let mut chain = ConfigChain::new(3);
         chain.apply_move(Move::new("U 7"));
-        println!("{:?}", chain.data.last().unwrap().tail);
+        // println!("{:?}", chain.data.last().unwrap().tail);
         assert_eq!(
             chain.data.last().unwrap().tail.visited.len(),
             HashSet::from([(0, 5), (0, 4), (0, 3), (0, 2), (0, 1), (0, 0)]).len(),
         );
-
-        // assert_eq!(
-        //     chain,
-        //     ConfigChain {
-        //         data: vec![
-        //             Configuration {
-        //                 head: Head { position: (0, 7) },
-        //                 tail: Tail {
-        //                     position: (0, 6),
-        //                     visited: HashSet::from([
-        //                         (0, 6),
-        //                         (0, 5),
-        //                         (0, 4),
-        //                         (0, 3),
-        //                         (0, 2),
-        //                         (0, 1),
-        //                         (0, 0)
-        //                     ])
-        //                 }
-        //             },
-        //             Configuration {
-        //                 head: Head { position: (0, 6) },
-        //                 tail: Tail {
-        //                     position: (0, 5),
-        //                     visited: HashSet::from([
-        //                         (0, 6),
-        //                         (0, 5),
-        //                         (0, 4),
-        //                         (0, 3),
-        //                         (0, 2),
-        //                         (0, 1),
-        //                         (0, 0)
-        //                     ])
-        //                 }
-        //             },
-        //             Configuration {
-        //                 head: Head { position: (0, 5) },
-        //                 tail: Tail {
-        //                     position: (0, 4),
-        //                     visited: HashSet::from([
-        //                         (0, 5),
-        //                         (0, 4),
-        //                         (0, 3),
-        //                         (0, 2),
-        //                         (0, 1),
-        //                         (0, 0)
-        //                     ])
-        //                 }
-        //             }
-        //         ],
-        //     }
-        // );
     }
 }

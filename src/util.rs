@@ -2,7 +2,38 @@ use nalgebra::Point2;
 use std::fmt::{self, Debug, Formatter};
 use std::ops::{Index, IndexMut};
 use std::str::{self, FromStr};
-use std::usize;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Point {
+    pub x: i64,
+    pub y: i64,
+}
+
+impl std::ops::Add for Point {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self {
+        Self {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl std::ops::Sub for Point {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self {
+        Self {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
+    }
+}
+
+impl Point {
+    pub fn new(x: i64, y: i64) -> Self {
+        Self { x, y }
+    }
+}
 
 #[derive(Debug, Eq, Hash, PartialEq)]
 pub enum Direction {

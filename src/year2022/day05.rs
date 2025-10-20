@@ -1,5 +1,4 @@
 use std::str::FromStr;
-use std::usize;
 use itertools::Itertools;
 
 #[derive(PartialEq, Debug)]
