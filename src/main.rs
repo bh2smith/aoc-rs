@@ -2,40 +2,41 @@ mod client;
 mod util;
 
 use crate::client::Client;
-use clap::{Arg, Command};
+use clap::{Arg, ArgAction, Command};
 use std::time::Instant;
 
 fn main() {
-    let matches = Command::new("aoc")
-        .version("0.1")
-        .about("Execute Advent of Code problems")
-        .author("Nicholas Lordello")
-        .arg(
-            Arg::new("year")
-                .short('y')
-                .long("year")
-                .value_name("YEAR")
-                .default_value("2023")
-                .value_parser(clap::value_parser!(i32)), // Replace validator()
-        )
-        .arg(Arg::new("show-time").long("show-time"))
-        .arg(
-            Arg::new("days")
-                .short('d') // Short flags now use single quotes
-                .value_name("DAY")
-                .required(true)
-                .num_args(1..)
-                .value_parser(clap::value_parser!(i32)), // Replace validator()
-        )
-        .get_matches();
+let matches = Command::new("aoc")
+    .version("0.1")
+    .about("Execute Advent of Code problems")
+    .author("Nicholas Lordello")
+    .arg(
+        Arg::new("year")
+            .short('y')
+            .long("year")
+            .value_name("YEAR")
+            .default_value("2016")
+            .value_parser(clap::value_parser!(i32)),
+    )
+    .arg(
+        Arg::new("show-time")
+            .long("show-time")
+            .help("Show timestamps in output")
+            .action(ArgAction::SetTrue), // <-- make it a flag
+    )
+    .arg(
+        Arg::new("days")
+            .short('d')
+            .value_name("DAY")
+            .required(true)
+            .num_args(1..)                         // one or more
+            .value_parser(clap::value_parser!(i32)),
+    )
+    .get_matches();
 
-    let year: i32 = *matches.get_one::<i32>("year").expect("year is required");
-    let show_time = matches.get_flag("show-time");
-    let days: Vec<i32> = matches
-        .get_many::<i32>("days")
-        .unwrap_or_default()
-        .copied() // `get_many()` returns references, so we use `.copied()`
-        .collect();
+let year: i32 = *matches.get_one::<i32>("year").expect("year is required");
+let show_time: bool = matches.get_flag("show-time");
+let days: Vec<i32> = matches.get_many::<i32>("days").unwrap_or_default().copied().collect();
 
     let client = Client::from_env().expect("failed to create adventofcode.com client");
     for day in days {
@@ -140,6 +141,28 @@ advent!(
     year2018 {
         day01,
         //        day02,
+    },
+    year2016 {
+        day01,
+        // day02,
+        // day03,
+        // day04,
+        // day09,
+        // day10,
+        // day11,
+        // day12,
+        // day13,
+        // day14,
+        // day15,
+        // day16,
+        // day17,
+        // day18,
+        // day19,
+        //        day20,
+        //        day22,
+        //        day23,
+        //        day24,
+        //        day25,
     },
     year2015 {
         day01,
