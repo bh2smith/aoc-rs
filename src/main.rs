@@ -6,37 +6,41 @@ use clap::{Arg, ArgAction, Command};
 use std::time::Instant;
 
 fn main() {
-let matches = Command::new("aoc")
-    .version("0.1")
-    .about("Execute Advent of Code problems")
-    .author("Nicholas Lordello")
-    .arg(
-        Arg::new("year")
-            .short('y')
-            .long("year")
-            .value_name("YEAR")
-            .default_value("2016")
-            .value_parser(clap::value_parser!(i32)),
-    )
-    .arg(
-        Arg::new("show-time")
-            .long("show-time")
-            .help("Show timestamps in output")
-            .action(ArgAction::SetTrue), // <-- make it a flag
-    )
-    .arg(
-        Arg::new("days")
-            .short('d')
-            .value_name("DAY")
-            .required(true)
-            .num_args(1..)                         // one or more
-            .value_parser(clap::value_parser!(i32)),
-    )
-    .get_matches();
+    let matches = Command::new("aoc")
+        .version("0.1")
+        .about("Execute Advent of Code problems")
+        .author("Nicholas Lordello")
+        .arg(
+            Arg::new("year")
+                .short('y')
+                .long("year")
+                .value_name("YEAR")
+                .default_value("2016")
+                .value_parser(clap::value_parser!(i32)),
+        )
+        .arg(
+            Arg::new("show-time")
+                .long("show-time")
+                .help("Show timestamps in output")
+                .action(ArgAction::SetTrue), // <-- make it a flag
+        )
+        .arg(
+            Arg::new("days")
+                .short('d')
+                .value_name("DAY")
+                .required(true)
+                .num_args(1..) // one or more
+                .value_parser(clap::value_parser!(i32)),
+        )
+        .get_matches();
 
-let year: i32 = *matches.get_one::<i32>("year").expect("year is required");
-let show_time: bool = matches.get_flag("show-time");
-let days: Vec<i32> = matches.get_many::<i32>("days").unwrap_or_default().copied().collect();
+    let year: i32 = *matches.get_one::<i32>("year").expect("year is required");
+    let show_time: bool = matches.get_flag("show-time");
+    let days: Vec<i32> = matches
+        .get_many::<i32>("days")
+        .unwrap_or_default()
+        .copied()
+        .collect();
 
     let client = Client::from_env().expect("failed to create adventofcode.com client");
     for day in days {

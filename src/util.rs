@@ -3,10 +3,17 @@ use std::fmt::{self, Debug, Formatter};
 use std::ops::{Index, IndexMut};
 use std::str::{self, FromStr};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Point {
     pub x: i64,
     pub y: i64,
+}
+
+impl Debug for Point {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        // Empty name => prints as "(x, y)"
+        f.debug_tuple("").field(&self.x).field(&self.y).finish()
+    }
 }
 
 impl std::ops::Add for Point {
@@ -51,6 +58,15 @@ impl Direction {
             'L' => Direction::Left,
             'U' => Direction::Up,
             v => panic!("Unexpected direction character! {}", v),
+        }
+    }
+
+    pub fn as_point(&self, magnitude: i64) -> Point {
+        match self {
+            Direction::Up => Point::new(0, magnitude),
+            Direction::Down => Point::new(0, magnitude * -1),
+            Direction::Left => Point::new(magnitude * -1, 0),
+            Direction::Right => Point::new(magnitude, 0),
         }
     }
 }
