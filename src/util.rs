@@ -1,22 +1,23 @@
 use nalgebra::Point2;
+use num::{One, Zero};
 use std::fmt::{self, Debug, Formatter};
-use std::ops::{Index, IndexMut};
+use std::ops::{Index, IndexMut, Neg};
 use std::str::{self, FromStr};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Point {
-    pub x: i64,
-    pub y: i64,
+pub struct Point<T = i64> {
+    pub x: T,
+    pub y: T,
 }
 
-impl Debug for Point {
+impl<T: Debug> Debug for Point<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         // Empty name => prints as "(x, y)"
         f.debug_tuple("").field(&self.x).field(&self.y).finish()
     }
 }
 
-impl std::ops::Add for Point {
+impl<T: std::ops::Add<Output = T>> std::ops::Add for Point<T> {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         Self {
@@ -26,7 +27,7 @@ impl std::ops::Add for Point {
     }
 }
 
-impl std::ops::Sub for Point {
+impl<T: std::ops::Sub<Output = T>> std::ops::Sub for Point<T> {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
         Self {
@@ -36,8 +37,8 @@ impl std::ops::Sub for Point {
     }
 }
 
-impl Point {
-    pub fn new(x: i64, y: i64) -> Self {
+impl<T> Point<T> {
+    pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
@@ -61,12 +62,17 @@ impl Direction {
         }
     }
 
-    pub fn as_point(&self, magnitude: i64) -> Point {
+    pub fn as_point<T: Zero + std::ops::Mul<Output = T> + Neg<Output = T> + One>(
+        &self,
+        magnitude: T,
+    ) -> Point<T> {
+        let one = T::one();
+        let zero = T::zero();
         match self {
-            Direction::Up => Point::new(0, magnitude),
-            Direction::Down => Point::new(0, magnitude * -1),
-            Direction::Left => Point::new(magnitude * -1, 0),
-            Direction::Right => Point::new(magnitude, 0),
+            Direction::Up => Point::new(zero, magnitude),
+            Direction::Down => Point::new(zero, magnitude * -one),
+            Direction::Left => Point::new(magnitude * -one, zero),
+            Direction::Right => Point::new(magnitude, zero),
         }
     }
 }
@@ -219,4 +225,17 @@ pub fn adjacent_helper(
         .iter()
         .map(move |(dx, dy)| ((pos[0] as isize) + *dx, (pos[1] as isize) + *dy))
         .map(|(x, y)| Point2::new(x as usize, y as usize))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn direction_as_point() {
+        assert_eq!(Direction::Up.as_point(2), Point::new(0, 2));
+        assert_eq!(Direction::Left.as_point(3), Point::new(-3, 0));
+        assert_eq!(Direction::Down.as_point(4), Point::new(0, -4));
+        assert_eq!(Direction::Right.as_point(5), Point::new(5, 0));
+    }
 }
