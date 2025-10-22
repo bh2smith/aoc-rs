@@ -54,7 +54,7 @@ impl From<&str> for Room {
     }
 }
 fn parse_input(input: &str) -> Vec<Room> {
-    input.lines().map(Room::from).collect::<Vec<Room>>()
+    input.lines().map(Room::from).collect()
 }
 
 pub fn puzzle1(input: &str) -> u32 {
