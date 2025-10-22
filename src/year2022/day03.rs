@@ -1,24 +1,28 @@
-use std::collections::HashSet;
 use crate::util;
 use itertools::Itertools;
+use std::collections::HashSet;
 
 const CHAR_VALUES_BY_INDEX: &str = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 fn priority(ch: char) -> i64 {
-    CHAR_VALUES_BY_INDEX.find(ch).expect("We were told all rows would have overlap") as i64
+    CHAR_VALUES_BY_INDEX
+        .find(ch)
+        .expect("We were told all rows would have overlap") as i64
 }
 
 pub fn puzzle1(input: &str) -> i64 {
-    util::parse::<String>(input).map(|item| {
-        // lengths are always even.
-        let (left, right) = item.split_at(item.len()/2);
-        let left_set: HashSet<_> = left.chars().collect();
-        let right_set: HashSet<_> = right.chars().collect();
-        let overlap: Vec<_> = left_set.intersection(&right_set).collect();
-        assert_eq!(overlap.len(), 1);
-        priority(*overlap[0])
-        // CHAR_VALUES_BY_INDEX.find(*overlap[0]).expect("We were told all rows would have overlap")
-    }).sum()
+    util::parse::<String>(input)
+        .map(|item| {
+            // lengths are always even.
+            let (left, right) = item.split_at(item.len() / 2);
+            let left_set: HashSet<_> = left.chars().collect();
+            let right_set: HashSet<_> = right.chars().collect();
+            let overlap: Vec<_> = left_set.intersection(&right_set).collect();
+            assert_eq!(overlap.len(), 1);
+            priority(*overlap[0])
+            // CHAR_VALUES_BY_INDEX.find(*overlap[0]).expect("We were told all rows would have overlap")
+        })
+        .sum()
 }
 
 pub fn puzzle2(input: &str) -> i64 {
@@ -51,8 +55,6 @@ PmmdzqPrVvPwwTWBwg
 wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw";
-
-
 
     #[test]
     fn puzzle1() {

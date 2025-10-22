@@ -22,7 +22,7 @@ struct Grid {
 impl Grid {
     fn new(serial_number: i32) -> Grid {
         let mut grid = Grid {
-            cells: unsafe { mem::uninitialized() },
+            cells: [[0; 300]; 300],
             powers: HashMap::with_capacity(300 * 300 * 150),
         };
 

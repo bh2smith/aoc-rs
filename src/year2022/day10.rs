@@ -281,7 +281,7 @@ noop";
     #[test]
     fn puzzle2() {
         // TODO: Fix this!
-        assert_eq!(1, 2-1)
+        assert_eq!(1, 2 - 1)
         // assert_eq!(super::puzzle2(LARGE_SAMPLE_INPUT), "0");
     }
 }

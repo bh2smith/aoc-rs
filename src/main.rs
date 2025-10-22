@@ -1,6 +1,14 @@
 mod client;
 mod util;
 
+mod year2015;
+mod year2016;
+// mod year2018;
+mod year2019;
+mod year2020;
+mod year2022;
+mod year2023;
+
 use crate::client::Client;
 use clap::{Arg, ArgAction, Command};
 use std::time::Instant;
@@ -70,13 +78,6 @@ macro_rules! advent {
             $($day:tt,)*
         },
     )*) => {
-        $(
-            mod $year {
-                $(
-                    pub mod $day;
-                )*
-            }
-        )*
 
         fn solve(year: i32, day: i32, input: &str) -> (String, String) {
             let year_str = format!("year{}", year);
@@ -142,10 +143,10 @@ advent!(
         day04,
         day05,
     },
-    year2018 {
-        day01,
-        //        day02,
-    },
+    // year2018 {
+    //     day01,
+    //     //        day02,
+    // },
     year2016 {
         day01,
         day02,

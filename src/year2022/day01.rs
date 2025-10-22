@@ -27,7 +27,7 @@ pub fn puzzle2(input: &str) -> i64 {
 
 #[cfg(test)]
 mod tests {
-    const SAMPLE_INPUT: &str =r"1000
+    const SAMPLE_INPUT: &str = r"1000
 2000
 3000
 

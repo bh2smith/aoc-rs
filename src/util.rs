@@ -75,6 +75,24 @@ impl Direction {
             Direction::Right => Point::new(magnitude, zero),
         }
     }
+
+    pub fn left_of(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Left,
+            Direction::Left => Direction::Down,
+            Direction::Down => Direction::Right,
+            Direction::Right => Direction::Up,
+        }
+    }
+
+    pub fn right_of(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Right,
+            Direction::Right => Direction::Down,
+            Direction::Down => Direction::Left,
+            Direction::Left => Direction::Up,
+        }
+    }
 }
 
 pub fn split(input: &str) -> impl '_ + Iterator<Item = &'_ str> {

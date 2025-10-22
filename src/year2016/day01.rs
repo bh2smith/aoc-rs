@@ -7,7 +7,7 @@ use crate::util::{Direction, Point};
 #[derive(Debug)]
 struct Move {
     direction: Direction,
-    amount: u32
+    amount: u32,
 }
 
 struct Position {
@@ -16,26 +16,6 @@ struct Position {
     visited: HashSet<Point>,
     found: bool,
     teleport: bool,
-}
-
-impl Direction {
-    fn left_of(&self) -> Direction {
-        match self {
-            Direction::Up => Direction::Left,
-            Direction::Left => Direction::Down,
-            Direction::Down => Direction::Right,
-            Direction::Right => Direction::Up,
-        }
-    }
-
-    fn right_of(&self) -> Direction {
-        match self {
-            Direction::Up => Direction::Right,
-            Direction::Right => Direction::Down,
-            Direction::Down => Direction::Left,
-            Direction::Left => Direction::Up,
-        }
-    }
 }
 
 impl Position {
@@ -54,16 +34,16 @@ impl Position {
         match d {
             Direction::Left => self.facing = self.facing.left_of(),
             Direction::Right => self.facing = self.facing.right_of(),
-            _ => panic!("Unexpected Turn")
+            _ => panic!("Unexpected Turn"),
         }
     }
 
     fn teleport(&mut self, amount: u32) {
-        self.at = self.at + self.facing.as_point(amount as i64) 
+        self.at = self.at + self.facing.as_point(amount as i64)
     }
 
     fn step(&mut self) {
-        self.at = self.at + self.facing.as_point(1) 
+        self.at = self.at + self.facing.as_point(1)
     }
 
     pub fn apply_move(&mut self, mv: Move) {
@@ -83,8 +63,6 @@ impl Position {
                 self.visited.insert(self.at);
             }
         }
-
-        
     }
 
     fn distance_home(&self) -> i64 {
@@ -97,7 +75,7 @@ impl Move {
         let mut chars = s[..1].chars();
         Self {
             direction: Direction::from_char(chars.next().unwrap()),
-            amount: s[1..].parse().expect("non-digit")
+            amount: s[1..].parse().expect("non-digit"),
         }
     }
 }

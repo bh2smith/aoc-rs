@@ -47,6 +47,7 @@ impl Dir {
 }
 
 bitflags! {
+    #[derive(Copy, Clone)]
     struct Dirs: u8 {
         const N = 0x01;
         const E = 0x02;
@@ -56,12 +57,13 @@ bitflags! {
 }
 
 impl Dirs {
-    fn dirs(&self) -> impl Iterator<Item = Dir> {
-        let ds = *self;
+    fn dirs(&self) -> impl Iterator<Item = Dir> + '_ {
+        let ds = self;
         Dir::values().filter(move |d| ds.contains(d.as_dirs()))
     }
 }
 
+#[derive(Copy, Clone)]
 struct Room {
     doors: Dirs,
     distance: usize,
@@ -132,7 +134,8 @@ fn puzzle(input: &str) -> HashMap<Point2<isize>, Room> {
             });
 
             while let Some((p, dist)) = traversal.pop() {
-                for d in map[&p].doors.dirs() {
+                let doors = map.get(&p).expect("missing current room").doors;
+                for d in doors.dirs() {
                     let n = p + d.to_vector();
                     let r = map.get_mut(&n).expect("missing adjacent room");
                     if r.distance > dist + 1 {
