@@ -1,5 +1,5 @@
-use std::str::FromStr;
 use itertools::Itertools;
+use std::str::FromStr;
 
 #[derive(PartialEq, Debug)]
 struct Move {
@@ -20,7 +20,6 @@ fn parse_stacks(input: &[&str]) -> Vec<Vec<char>> {
         let mut k = 0usize;
         println!("Row {:?}", row);
         while 1 + 4 * k < row.len() {
-
             let entry = row.chars().nth(1 + 4 * k).unwrap();
             println!("    key={}, entry={}", k, entry);
             if entry != ' ' {
@@ -39,10 +38,9 @@ fn parse_moves(input: &[Vec<&str>]) -> Vec<Move> {
             result.push(Move {
                 count: usize::from_str(row.get(1).unwrap()).unwrap(),
                 from: usize::from_str(row.get(3).unwrap()).unwrap() - 1,
-                to:usize::from_str(row.get(5).unwrap()).unwrap() - 1,
+                to: usize::from_str(row.get(5).unwrap()).unwrap() - 1,
             })
         }
-
     }
     result.reverse();
     result
@@ -62,7 +60,6 @@ fn parse_input(input: &str) -> (Vec<Vec<char>>, Vec<Move>) {
 fn move_crates(move_item: Move, mut stacks: Vec<Vec<char>>, singles: bool) -> Vec<Vec<char>> {
     if singles {
         for _ in 0..move_item.count {
-
             let to_move = stacks[move_item.from].pop().unwrap();
             stacks[move_item.to].push(to_move);
         }
@@ -77,22 +74,22 @@ fn move_crates(move_item: Move, mut stacks: Vec<Vec<char>>, singles: bool) -> Ve
 }
 
 pub fn puzzle1(input: &str) -> String {
-    let (mut stacks,mut moves) = parse_input(input);
-    while let Some(move_item) = moves.pop()  {
+    let (mut stacks, mut moves) = parse_input(input);
+    while let Some(move_item) = moves.pop() {
         println!("Applying move {:?}", move_item);
         println!("stacks before {:?}", stacks);
-        stacks = move_crates(move_item,stacks.clone(), true);
+        stacks = move_crates(move_item, stacks.clone(), true);
         println!("stacks after move: {:?}", stacks);
     }
     stacks.iter().map(|stack| stack.last().unwrap()).join("")
 }
 
 pub fn puzzle2(input: &str) -> String {
-    let (mut stacks,mut moves) = parse_input(input);
-    while let Some(move_item) = moves.pop()  {
+    let (mut stacks, mut moves) = parse_input(input);
+    while let Some(move_item) = moves.pop() {
         println!("Applying move {:?}", move_item);
         println!("stacks before {:?}", stacks);
-        stacks = move_crates(move_item,stacks.clone(), false);
+        stacks = move_crates(move_item, stacks.clone(), false);
         println!("stacks after move: {:?}", stacks);
     }
     stacks.iter().map(|stack| stack.last().unwrap()).join("")
@@ -100,7 +97,7 @@ pub fn puzzle2(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::year2022::day05::{Move, parse_moves, parse_stacks};
+    use crate::year2022::day05::{parse_moves, parse_stacks, Move};
 
     const SAMPLE_INPUT: &str = r"    [D]
 [N] [C]
@@ -118,7 +115,13 @@ move 1 from 1 to 2";
             "[D]",
             "[N] [C]",
             "[Z] [M] [P]",
-            "1", "", "", "2", "", "", "3",
+            "1",
+            "",
+            "",
+            "2",
+            "",
+            "",
+            "3",
         ];
         assert_eq!(
             parse_stacks(&test_vec),
@@ -128,15 +131,16 @@ move 1 from 1 to 2";
 
     #[test]
     fn test_parse_moves() {
-        let test_vec = [
-            vec!["move", "1", "from", "2", "to", "1"],
-        ];
+        let test_vec = [vec!["move", "1", "from", "2", "to", "1"]];
         assert_eq!(
             parse_moves(&test_vec),
-            vec![Move{ count: 1, from: 1, to: 0 }]
+            vec![Move {
+                count: 1,
+                from: 1,
+                to: 0
+            }]
         )
     }
-
 
     #[test]
     fn puzzle1() {

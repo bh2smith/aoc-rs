@@ -92,7 +92,7 @@ pub fn puzzle2(input: &str) -> usize {
     let mut values = HashMap::new();
     let mut counts = Vec::new();
 
-    'outer: for i in 0.. {
+    for i in 0.. {
         counts.push(field.count());
         if let Some(prev) = values.insert(field.current.as_bytes().to_owned(), i) {
             let period = i - prev;

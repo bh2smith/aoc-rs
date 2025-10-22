@@ -1,6 +1,6 @@
-use std::string::ToString;
 use crate::util::parse_csv;
 use std::iter::Iterator;
+use std::string::ToString;
 
 #[derive(Debug, PartialEq)]
 pub enum Mode {
@@ -62,18 +62,21 @@ pub fn parse_op(op_data: &str) -> Command {
             op_type = 3u8;
             Operation::Equal
         }
-        _ => panic!("Unexpected operation character!")
+        _ => panic!("Unexpected operation character!"),
     };
 
     let mut modes: Vec<Mode> = vec![];
     let len = op_data.len();
     if len > 2 {
-        modes = op_data[..len - 2].chars()
+        modes = op_data[..len - 2]
+            .chars()
             .map(|c| match c {
                 '0' => Mode::Position,
                 '1' => Mode::Immediate,
-                _ => panic!("Unexpected mode character!")
-            }).rev().collect();
+                _ => panic!("Unexpected mode character!"),
+            })
+            .rev()
+            .collect();
     }
     while modes.len() < 3 {
         modes.push(Mode::Position)
@@ -92,14 +95,16 @@ pub fn solve(program: &str, input: i64) -> i64 {
             1u8 => {
                 let x = numbers[i + 1];
                 match command.op {
-                    Operation::InAt => {
-                        numbers[x as usize] = input
-                    }
+                    Operation::InAt => numbers[x as usize] = input,
                     Operation::OutFrom => {
-                        let a = if command.modes[0] == Mode::Position { numbers[x as usize] } else { x };
+                        let a = if command.modes[0] == Mode::Position {
+                            numbers[x as usize]
+                        } else {
+                            x
+                        };
                         output = Some(a);
                     }
-                    _ => panic!("")
+                    _ => panic!(""),
                 };
                 i += 2;
             }
@@ -107,17 +112,33 @@ pub fn solve(program: &str, input: i64) -> i64 {
                 let x = numbers[i + 1];
                 let y = numbers[i + 2];
 
-                let a = if command.modes[0] == Mode::Position { numbers[x as usize] } else { x };
-                let b = if command.modes[1] == Mode::Position { numbers[y as usize] } else { y };
+                let a = if command.modes[0] == Mode::Position {
+                    numbers[x as usize]
+                } else {
+                    x
+                };
+                let b = if command.modes[1] == Mode::Position {
+                    numbers[y as usize]
+                } else {
+                    y
+                };
 
                 i = match command.op {
                     Operation::JumpTrue => {
-                        if a > 0 { b as usize } else { i + 3 }
+                        if a > 0 {
+                            b as usize
+                        } else {
+                            i + 3
+                        }
                     }
                     Operation::JumpFalse => {
-                        if a == 0 { b as usize } else { i + 3 }
+                        if a == 0 {
+                            b as usize
+                        } else {
+                            i + 3
+                        }
                     }
-                    _ => panic!("")
+                    _ => panic!(""),
                 }
             }
             3u8 => {
@@ -125,19 +146,39 @@ pub fn solve(program: &str, input: i64) -> i64 {
                 let y = numbers[i + 2];
                 let z = numbers[i + 3] as usize;
 
-                let a = if command.modes[0] == Mode::Position { numbers[x as usize] } else { x };
-                let b = if command.modes[1] == Mode::Position { numbers[y as usize] } else { y };
+                let a = if command.modes[0] == Mode::Position {
+                    numbers[x as usize]
+                } else {
+                    x
+                };
+                let b = if command.modes[1] == Mode::Position {
+                    numbers[y as usize]
+                } else {
+                    y
+                };
 
                 numbers[z] = match command.op {
                     Operation::Add => a + b,
                     Operation::Mul => a * b,
-                    Operation::LessThan => if a < b { 1 } else { 0 },
-                    Operation::Equal => if a == b { 1 } else { 0 }
-                    _ => panic!("Operation-type mismatch!")
+                    Operation::LessThan => {
+                        if a < b {
+                            1
+                        } else {
+                            0
+                        }
+                    }
+                    Operation::Equal => {
+                        if a == b {
+                            1
+                        } else {
+                            0
+                        }
+                    }
+                    _ => panic!("Operation-type mismatch!"),
                 };
                 i += 4;
             }
-            _ => panic!("Unexpected op-type!")
+            _ => panic!("Unexpected op-type!"),
         }
     }
     output.unwrap_or(0)
@@ -153,9 +194,9 @@ pub fn puzzle2(input: &str) -> i64 {
 
 #[cfg(test)]
 mod tests {
+    use super::Command;
     use super::Mode::{Immediate, Position};
     use super::Operation;
-    use super::Command;
 
     #[test]
     fn parse_test() {
@@ -222,8 +263,14 @@ mod tests {
     #[test]
     fn jump() {
         // Position Mode - output 0 if input = 0 else 1
-        assert_eq!(super::solve("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 0), 0);
-        assert_eq!(super::solve("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 1), 1);
+        assert_eq!(
+            super::solve("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 0),
+            0
+        );
+        assert_eq!(
+            super::solve("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 1),
+            1
+        );
 
         // Immediate Mode - output 0 if input = 0 else 1
         assert_eq!(super::solve("3,3,1105,-1,9,1101,0,0,12,4,12,99,1", 0), 0);
@@ -237,5 +284,4 @@ mod tests {
         assert_eq!(super::solve(program, 8), 1000);
         assert_eq!(super::solve(program, 9), 1001);
     }
-
 }

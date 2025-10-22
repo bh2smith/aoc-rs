@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::util;
+use std::collections::HashMap;
 
 pub fn puzzle1(input: &str) -> i64 {
     let mut counts = HashMap::new();
