@@ -37,7 +37,7 @@ impl From<&str> for Trip {
 
 pub fn puzzle1(input: &str) -> usize {
     // parse rows:
-    let trips = input.trim().lines().map(|line| Trip::from(line)).collect_vec();
+    let trips = input.trim().lines().map(Trip::from).collect_vec();
     trips.iter().filter(|t| t.triangle_inequality()).count()
 }
 
