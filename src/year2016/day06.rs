@@ -1,7 +1,4 @@
-use std::{
-    collections::{BTreeMap, HashMap},
-    u32,
-};
+use std::collections::{BTreeMap, HashMap};
 
 use itertools::Itertools;
 
@@ -9,11 +6,7 @@ fn parse_input(input: &str) -> BTreeMap<usize, HashMap<char, u32>> {
     let mut map: BTreeMap<usize, HashMap<char, u32>> = BTreeMap::new();
     input.trim().lines().for_each(|x| {
         for (index, value) in x.chars().enumerate() {
-            let value = map
-                .entry(index)
-                .or_insert(HashMap::new())
-                .entry(value)
-                .or_default();
+            let value = map.entry(index).or_default().entry(value).or_default();
             *value += 1;
         }
     });
