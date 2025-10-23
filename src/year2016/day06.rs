@@ -83,6 +83,6 @@ enarar";
 
     #[test]
     fn puzzle2() {
-        assert_eq!(super::puzzle2(SAMPLE_INPUT), 0);
+        assert_eq!(super::puzzle2(SAMPLE_INPUT), "advent");
     }
 }
