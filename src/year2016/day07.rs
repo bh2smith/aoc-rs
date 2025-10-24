@@ -9,10 +9,7 @@ fn contains_abba(x: &str) -> bool {
 
 fn get_abas(x: &str) -> HashSet<Aba> {
     let v: Vec<char> = x.chars().collect();
-    v.windows(3)
-        .filter_map(|w| Aba::try_from(w).ok())
-        // .mreap(|x| x.iter().collect())
-        .collect()
+    v.windows(3).filter_map(|w| Aba::try_from(w).ok()).collect()
 }
 
 #[derive(PartialEq, Eq, Hash, Clone, Debug)]
@@ -27,7 +24,6 @@ impl TryFrom<&[char]> for Aba {
     fn try_from(w: &[char]) -> Result<Self, Self::Error> {
         match w.len() {
             3 => {
-                // let w = value.chars().collect_vec();
                 if w[0] == w[2] && w[1] != w[0] {
                     let x = Self {
                         value: w.iter().collect(),
