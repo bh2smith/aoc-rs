@@ -187,6 +187,50 @@ impl Grid {
             .enumerate()
             .map(move |(i, v)| ([i % w, i / w].into(), v))
     }
+
+    /// Rotates a row cyclically by `offset` cells.
+    /// Positive offset → right rotation; negative → left rotation.
+    pub fn rotate_row(&mut self, row: usize, offset: isize) {
+        let (w, h) = self.size;
+        assert!(row < h, "Row index {} out of bounds", row);
+
+        let start = row * w;
+        let end = start + w;
+        let slice = &mut self.squares[start..end];
+
+        // Normalize offset to the row width
+        let offset = ((offset % w as isize + w as isize) % w as isize) as usize;
+        if offset == 0 {
+            return;
+        }
+
+        // rotate_right is cyclic — efficient & in-place
+        slice.rotate_right(offset);
+    }
+
+    /// Rotates a column cyclically by `offset` cells.
+    /// Positive offset → down rotation; negative → up rotation.
+    pub fn rotate_column(&mut self, col: usize, offset: isize) {
+        let (w, h) = self.size;
+        assert!(col < w, "Column index {} out of bounds", col);
+
+        // Extract the column into a temporary Vec
+        let mut column: Vec<u8> = (0..h).map(|row| self.squares[row * w + col]).collect();
+
+        // Normalize offset to column height
+        let offset = ((offset % h as isize + h as isize) % h as isize) as usize;
+        if offset == 0 {
+            return;
+        }
+
+        // Rotate cyclically
+        column.rotate_right(offset);
+
+        // Write back the rotated column
+        for (row, &val) in column.iter().enumerate() {
+            self.squares[row * w + col] = val;
+        }
+    }
 }
 
 impl<P: Into<Point2<usize>>> Index<P> for Grid {
