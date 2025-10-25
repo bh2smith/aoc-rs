@@ -135,7 +135,8 @@ advent!(
     year2020 {
         day01,
         day02,
-        // day03,
+        day03,
+        // day04,
     },
     year2019 {
         day01,
