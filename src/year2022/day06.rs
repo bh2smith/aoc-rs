@@ -1,11 +1,10 @@
-use std::collections::{HashSet};
+use std::collections::HashSet;
 use std::iter::FromIterator;
-
 
 fn gen_solve(input: &str, n: usize) -> i64 {
     let input_chars: Vec<_> = input.chars().collect();
     for i in 0..input.len() {
-        let curr: HashSet<_> = HashSet::from_iter(input_chars[i..i+n].iter());
+        let curr: HashSet<_> = HashSet::from_iter(input_chars[i..i + n].iter());
         if curr.len() == n {
             return (i + n) as i64;
         }

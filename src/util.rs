@@ -1,15 +1,23 @@
 use nalgebra::Point2;
+use num::{One, Zero};
 use std::fmt::{self, Debug, Formatter};
-use std::ops::{Index, IndexMut};
+use std::ops::{Index, IndexMut, Neg};
 use std::str::{self, FromStr};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Point {
-    pub x: i64,
-    pub y: i64,
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Point<T = i64> {
+    pub x: T,
+    pub y: T,
 }
 
-impl std::ops::Add for Point {
+impl<T: Debug> Debug for Point<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        // Empty name => prints as "(x, y)"
+        f.debug_tuple("").field(&self.x).field(&self.y).finish()
+    }
+}
+
+impl<T: std::ops::Add<Output = T>> std::ops::Add for Point<T> {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         Self {
@@ -19,7 +27,7 @@ impl std::ops::Add for Point {
     }
 }
 
-impl std::ops::Sub for Point {
+impl<T: std::ops::Sub<Output = T>> std::ops::Sub for Point<T> {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
         Self {
@@ -29,8 +37,8 @@ impl std::ops::Sub for Point {
     }
 }
 
-impl Point {
-    pub fn new(x: i64, y: i64) -> Self {
+impl<T> Point<T> {
+    pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
@@ -51,6 +59,38 @@ impl Direction {
             'L' => Direction::Left,
             'U' => Direction::Up,
             v => panic!("Unexpected direction character! {}", v),
+        }
+    }
+
+    pub fn as_point<T: Zero + std::ops::Mul<Output = T> + Neg<Output = T> + One>(
+        &self,
+        magnitude: T,
+    ) -> Point<T> {
+        let one = T::one();
+        let zero = T::zero();
+        match self {
+            Direction::Up => Point::new(zero, magnitude),
+            Direction::Down => Point::new(zero, magnitude * -one),
+            Direction::Left => Point::new(magnitude * -one, zero),
+            Direction::Right => Point::new(magnitude, zero),
+        }
+    }
+
+    pub fn left_of(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Left,
+            Direction::Left => Direction::Down,
+            Direction::Down => Direction::Right,
+            Direction::Right => Direction::Up,
+        }
+    }
+
+    pub fn right_of(&self) -> Self {
+        match self {
+            Direction::Up => Direction::Right,
+            Direction::Right => Direction::Down,
+            Direction::Down => Direction::Left,
+            Direction::Left => Direction::Up,
         }
     }
 }
@@ -147,6 +187,50 @@ impl Grid {
             .enumerate()
             .map(move |(i, v)| ([i % w, i / w].into(), v))
     }
+
+    /// Rotates a row cyclically by `offset` cells.
+    /// Positive offset → right rotation; negative → left rotation.
+    pub fn rotate_row(&mut self, row: usize, offset: isize) {
+        let (w, h) = self.size;
+        assert!(row < h, "Row index {} out of bounds", row);
+
+        let start = row * w;
+        let end = start + w;
+        let slice = &mut self.squares[start..end];
+
+        // Normalize offset to the row width
+        let offset = ((offset % w as isize + w as isize) % w as isize) as usize;
+        if offset == 0 {
+            return;
+        }
+
+        // rotate_right is cyclic — efficient & in-place
+        slice.rotate_right(offset);
+    }
+
+    /// Rotates a column cyclically by `offset` cells.
+    /// Positive offset → down rotation; negative → up rotation.
+    pub fn rotate_column(&mut self, col: usize, offset: isize) {
+        let (w, h) = self.size;
+        assert!(col < w, "Column index {} out of bounds", col);
+
+        // Extract the column into a temporary Vec
+        let mut column: Vec<u8> = (0..h).map(|row| self.squares[row * w + col]).collect();
+
+        // Normalize offset to column height
+        let offset = ((offset % h as isize + h as isize) % h as isize) as usize;
+        if offset == 0 {
+            return;
+        }
+
+        // Rotate cyclically
+        column.rotate_right(offset);
+
+        // Write back the rotated column
+        for (row, &val) in column.iter().enumerate() {
+            self.squares[row * w + col] = val;
+        }
+    }
 }
 
 impl<P: Into<Point2<usize>>> Index<P> for Grid {
@@ -203,4 +287,17 @@ pub fn adjacent_helper(
         .iter()
         .map(move |(dx, dy)| ((pos[0] as isize) + *dx, (pos[1] as isize) + *dy))
         .map(|(x, y)| Point2::new(x as usize, y as usize))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn direction_as_point() {
+        assert_eq!(Direction::Up.as_point(2), Point::new(0, 2));
+        assert_eq!(Direction::Left.as_point(3), Point::new(-3, 0));
+        assert_eq!(Direction::Down.as_point(4), Point::new(0, -4));
+        assert_eq!(Direction::Right.as_point(5), Point::new(5, 0));
+    }
 }

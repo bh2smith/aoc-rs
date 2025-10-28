@@ -38,14 +38,14 @@ impl Platform {
                 for i in 0..self.grid.len() {
                     for j in 0..self.grid[i].len() {
                         if self.grid[i][j] == 'O' {
-                                let mut k = j;
+                            let mut k = j;
 
-                                while k > 0 && self.grid[i][k - 1] == '.' {
-                                    k -= 1;
-                                }
+                            while k > 0 && self.grid[i][k - 1] == '.' {
+                                k -= 1;
+                            }
 
-                                self.grid[i][j] = '.';
-                                self.grid[i][k] = 'O';
+                            self.grid[i][j] = '.';
+                            self.grid[i][k] = 'O';
                         }
                     }
                 }
@@ -54,14 +54,14 @@ impl Platform {
                 for i in (0..self.grid.len()).rev() {
                     for j in 0..self.grid[i].len() {
                         if self.grid[i][j] == 'O' {
-                                let mut k = i;
+                            let mut k = i;
 
-                                while k < self.grid.len() - 1 && self.grid[k + 1][j] == '.' {
-                                    k += 1;
-                                }
+                            while k < self.grid.len() - 1 && self.grid[k + 1][j] == '.' {
+                                k += 1;
+                            }
 
-                                self.grid[i][j] = '.';
-                                self.grid[k][j] = 'O';
+                            self.grid[i][j] = '.';
+                            self.grid[k][j] = 'O';
                         }
                     }
                 }
@@ -70,14 +70,14 @@ impl Platform {
                 for i in 0..self.grid.len() {
                     for j in (0..self.grid[i].len()).rev() {
                         if self.grid[i][j] == 'O' {
-                                let mut k = j;
+                            let mut k = j;
 
-                                while k < self.grid[0].len() - 1 && self.grid[i][k + 1] == '.' {
-                                    k += 1;
-                                }
+                            while k < self.grid[0].len() - 1 && self.grid[i][k + 1] == '.' {
+                                k += 1;
+                            }
 
-                                self.grid[i][j] = '.';
-                                self.grid[i][k] = 'O';
+                            self.grid[i][j] = '.';
+                            self.grid[i][k] = 'O';
                         }
                     }
                 }

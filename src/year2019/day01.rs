@@ -1,6 +1,8 @@
 use crate::util;
 
-pub fn fuel(mass: i64) -> i64 { mass / 3 - 2 }
+pub fn fuel(mass: i64) -> i64 {
+    mass / 3 - 2
+}
 
 pub fn puzzle1(input: &str) -> i64 {
     let mut sum = 0;

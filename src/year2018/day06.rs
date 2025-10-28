@@ -1,7 +1,7 @@
 use crate::util;
 use failure::{self, Error};
 use std::cmp;
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::fmt::{self, Debug, Formatter};
 use std::ops::{Add, Sub};
 use std::str::FromStr;

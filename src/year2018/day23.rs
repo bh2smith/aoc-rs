@@ -1,7 +1,7 @@
 use crate::util;
 use failure::Error;
 use lazy_static::lazy_static;
-use nalgebra::{Point3, Vector3};
+use nalgebra::{zero, Point3, Vector3};
 use regex::Regex;
 use std::cmp;
 use std::i64;
@@ -78,7 +78,7 @@ pub fn puzzle2(input: &str) -> i64 {
     );
 
     let mut scale = 1;
-    while (max.coords - min.coords) / 2 != nalgebra::zero() {
+    while (max.coords - min.coords) / 2 != nalgebra::zero::<Vector3<i64>>() {
         min /= 2;
         max /= 2;
         scale *= 2;

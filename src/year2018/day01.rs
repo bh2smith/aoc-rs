@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use crate::util;
+use std::collections::HashSet;
 
 pub fn puzzle1(input: &str) -> i64 {
     util::parse::<i64>(input).sum()

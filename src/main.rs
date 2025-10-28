@@ -1,8 +1,16 @@
 mod client;
 mod util;
 
+mod year2015;
+mod year2016;
+// mod year2018;
+mod year2019;
+mod year2020;
+mod year2022;
+mod year2023;
+
 use crate::client::Client;
-use clap::{Arg, Command};
+use clap::{Arg, ArgAction, Command};
 use std::time::Instant;
 
 fn main() {
@@ -15,26 +23,31 @@ fn main() {
                 .short('y')
                 .long("year")
                 .value_name("YEAR")
-                .default_value("2023")
-                .value_parser(clap::value_parser!(i32)), // Replace validator()
+                .default_value("2016")
+                .value_parser(clap::value_parser!(i32)),
         )
-        .arg(Arg::new("show-time").long("show-time"))
+        .arg(
+            Arg::new("show-time")
+                .long("show-time")
+                .help("Show timestamps in output")
+                .action(ArgAction::SetTrue), // <-- make it a flag
+        )
         .arg(
             Arg::new("days")
-                .short('d') // Short flags now use single quotes
+                .short('d')
                 .value_name("DAY")
                 .required(true)
-                .num_args(1..)
-                .value_parser(clap::value_parser!(i32)), // Replace validator()
+                .num_args(1..) // one or more
+                .value_parser(clap::value_parser!(i32)),
         )
         .get_matches();
 
     let year: i32 = *matches.get_one::<i32>("year").expect("year is required");
-    let show_time = matches.get_flag("show-time");
+    let show_time: bool = matches.get_flag("show-time");
     let days: Vec<i32> = matches
         .get_many::<i32>("days")
         .unwrap_or_default()
-        .copied() // `get_many()` returns references, so we use `.copied()`
+        .copied()
         .collect();
 
     let client = Client::from_env().expect("failed to create adventofcode.com client");
@@ -65,13 +78,6 @@ macro_rules! advent {
             $($day:tt,)*
         },
     )*) => {
-        $(
-            mod $year {
-                $(
-                    pub mod $day;
-                )*
-            }
-        )*
 
         fn solve(year: i32, day: i32, input: &str) -> (String, String) {
             let year_str = format!("year{}", year);
@@ -128,7 +134,9 @@ advent!(
     },
     year2020 {
         day01,
-        //day02,
+        day02,
+        day03,
+        // day04,
     },
     year2019 {
         day01,
@@ -137,9 +145,35 @@ advent!(
         day04,
         day05,
     },
-    year2018 {
+    // year2018 {
+    //     day01,
+    //     //        day02,
+    // },
+    year2016 {
         day01,
-        //        day02,
+        day02,
+        day03,
+        day04,
+        day05,
+        day06,
+        day07,
+        day08,
+        day09,
+        day10,
+        // day11,
+        // day12,
+        // day13,
+        // day14,
+        // day15,
+        // day16,
+        // day17,
+        // day18,
+        // day19,
+        //        day20,
+        //        day22,
+        //        day23,
+        //        day24,
+        //        day25,
     },
     year2015 {
         day01,

@@ -111,10 +111,10 @@ fn points_to_string(mut points: Vec<Point>) -> String {
         ),
         |o, p| {
             (
-                cmp::min(o.0, p.pos.data[0]),
-                cmp::min(o.1, p.pos.data[1]),
-                cmp::max(o.2, p.pos.data[0]),
-                cmp::max(o.3, p.pos.data[1]),
+                cmp::min(o.0, p.pos.x),
+                cmp::min(o.1, p.pos.y),
+                cmp::max(o.2, p.pos.x),
+                cmp::max(o.3, p.pos.y),
             )
         },
     );
@@ -122,19 +122,19 @@ fn points_to_string(mut points: Vec<Point>) -> String {
     let origin = Vector2::new(minx, miny);
     let max = Vector2::new(maxx, maxy) - origin;
 
-    points.sort_unstable_by_key(|p| (p.pos.data[1], p.pos.data[0]));
+    points.sort_unstable_by_key(|p| (p.pos.y, p.pos.x));
 
-    let mut result = String::with_capacity(1 + (2 + max.data[0] * max.data[1]) as usize);
+    let mut result = String::with_capacity(1 + (2 + max.x * max.y) as usize);
     result.push('\n');
 
     let (mut i, mut j) = (0, 0);
     for (x, y) in points
         .into_iter()
         .map(|p| p.pos - origin)
-        .map(|p| (p.data[0], p.data[1]))
+        .map(|p| (p.x, p.y))
     {
         while j < y {
-            for _ in i..=max.data[0] {
+            for _ in i..=max.x {
                 result.push('.');
             }
             i = 0;
@@ -152,7 +152,7 @@ fn points_to_string(mut points: Vec<Point>) -> String {
             i += 1;
         }
     }
-    for _ in i..=max.data[0] {
+    for _ in i..=max.x {
         result.push('.');
     }
 

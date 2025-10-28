@@ -1,9 +1,9 @@
+use crate::util;
 use failure::{self, Error};
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
-use crate::util;
 
 struct Rect {
     x: u16,
@@ -63,7 +63,10 @@ pub fn puzzle1(input: &str) -> usize {
 
 pub fn puzzle2(input: &str) -> i64 {
     let claims = util::parse::<Claim>(input).collect::<Vec<_>>();
-    let ids = claims.iter().map(|Claim(id, _)| *id).collect::<HashSet<_>>();
+    let ids = claims
+        .iter()
+        .map(|Claim(id, _)| *id)
+        .collect::<HashSet<_>>();
 
     let len = claims.len();
     let mut no_overlap = (0..len)
