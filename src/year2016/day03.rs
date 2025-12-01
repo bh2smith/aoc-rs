@@ -51,10 +51,9 @@ pub fn puzzle2(input: &str) -> usize {
 
     // Process in chunks of 3 rows at a time
     for chunk in rows.chunks(3) {
-        if chunk.len() == 3 {
-            // Transpose: zip each column downward
-            for i in 0..chunk[0].len() {
-                let line = format!("{} {} {}", chunk[0][i], chunk[1][i], chunk[2][i]);
+        if let [a, b, c] = chunk {
+            for (&x, (&y, &z)) in a.iter().zip(b.iter().zip(c.iter())) {
+                let line = format!("{x} {y} {z}");
                 trips.push(Trip::from(line.as_str()));
             }
         }

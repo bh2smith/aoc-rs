@@ -75,10 +75,7 @@ fn act_one(
     bins: &mut HashMap<u32, HashSet<u32>>,
     key: (u32, u32),
 ) -> Option<u32> {
-    let mut me = match bots.remove(&id) {
-        Some(b) => b,
-        None => return None, // or panic if invariant should hold
-    };
+    let mut me = bots.remove(&id)?;
     if me.chips.len() < 2 {
         // put it back unchanged
         bots.insert(id, me);

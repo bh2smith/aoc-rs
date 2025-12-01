@@ -8,6 +8,7 @@ mod year2019;
 mod year2020;
 mod year2022;
 mod year2023;
+mod year2025;
 
 use crate::client::Client;
 use clap::{Arg, ArgAction, Command};
@@ -23,7 +24,7 @@ fn main() {
                 .short('y')
                 .long("year")
                 .value_name("YEAR")
-                .default_value("2016")
+                .default_value("2025")
                 .value_parser(clap::value_parser!(i32)),
         )
         .arg(
@@ -99,6 +100,27 @@ macro_rules! advent {
 }
 
 advent!(
+    year2025 {
+        day01,
+        // day02,
+        // day03,
+        // day04,
+        // day05,
+        // day06,
+        // day07,
+        // day08,
+        // day09,
+        // day10,
+        // day11,
+        // day12,
+        // day13,
+        // day14,
+        // day15,
+        // day16,
+        // day17,
+        // day18,
+        // day19,
+    },
     year2023 {
         day01,
         day02,
