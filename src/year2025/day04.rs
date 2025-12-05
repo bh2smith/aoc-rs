@@ -1,3 +1,5 @@
+use std::{thread::sleep, time::Duration};
+
 use crate::util::{adjacent8, Grid};
 
 fn clear(g: &mut Grid) -> usize {
@@ -28,6 +30,9 @@ pub fn puzzle2(input: &str) -> usize {
     let mut g = Grid::from_layout(input);
     std::iter::from_fn(|| {
         let n = clear(&mut g);
+        // sleep(Duration::from_millis(100));
+        // print!("\x1B[2J\x1B[1;1H");
+        // println!("{g:?}");
         (n != 0).then_some(n)
     })
     .sum()
