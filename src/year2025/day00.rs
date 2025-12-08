@@ -1,8 +1,8 @@
-pub fn puzzle1(input: &str) -> i64 {
+pub fn puzzle1(input: &str) -> u64 {
     0
 }
 
-pub fn puzzle2(input: &str) -> i64 {
+pub fn puzzle2(input: &str) -> u64 {
     0
 }
 
