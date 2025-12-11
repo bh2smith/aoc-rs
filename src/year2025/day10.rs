@@ -1,35 +1,50 @@
-// use std::collections::HashSet;
-
+// use crate::util::transpose;
 use itertools::Itertools;
 
-use bitgauss::BitMatrix;
+use std::{iter::Sum, ops::Add};
 
-use crate::util::transpose;
+#[derive(Clone, Debug)]
+pub struct Button(Vec<bool>);
 
-#[derive(Debug)]
-struct Machine {
-    target: Vec<bool>,
-    buttons: Vec<Vec<bool>>,
-    // jolts: HashSet<usize>,
-}
+impl Add for Button {
+    type Output = Button;
 
-impl Machine {
-    fn solve(&self) {
-        let a = BitMatrix::from_bool_vec(&transpose(self.buttons.clone()));
-        let b = BitMatrix::from_bool_vec(&transpose(vec![self.target.clone()]));
-
-        // Build augmented matrix [A | b]
-        let aug = a.hstack(&b);
-
-        let mut aug_red = aug.clone();
-        aug_red.gauss(true);
-
-        println!("Row echelon form: \n{}", aug_red);
-        // let mut solution = vec![false; self.buttons.len()];
+    fn add(self, rhs: Button) -> Button {
+        assert_eq!(self.0.len(), rhs.0.len(), "Vectors must have same length");
+        Button(self.0.into_iter().zip(rhs.0).map(|(a, b)| a ^ b).collect())
     }
 }
 
-fn parse_input(input: &str) -> Vec<Machine> {
+impl Sum<Button> for Button {
+    fn sum<I>(iter: I) -> Button
+    where
+        I: Iterator<Item = Button>,
+    {
+        let mut iter = iter.into_iter();
+        if let Some(first) = iter.next() {
+            iter.fold(first, |acc, b| acc + b)
+        } else {
+            // identity element for XOR is all-false; but if we don't know length,
+            // we can return empty and let the caller decide if empty is valid.
+            Button(Vec::new())
+        }
+    }
+}
+
+#[derive(Debug)]
+struct MachineA {
+    target: Vec<bool>,
+    buttons: Vec<Button>,
+    // jolts: Vec<i64>,
+}
+
+#[derive(Debug)]
+struct MachineB {
+    buttons: Vec<Vec<i64>>,
+    jolts: Vec<i64>,
+}
+
+fn parse_1(input: &str) -> Vec<MachineA> {
     input
         .trim()
         .lines()
@@ -51,10 +66,10 @@ fn parse_input(input: &str) -> Vec<Machine> {
                     let i = x.parse::<usize>().unwrap();
                     button[i] = true;
                 }
-                buttons.push(button);
+                buttons.push(Button(button));
             }
 
-            Machine {
+            MachineA {
                 target,
                 buttons,
                 // jolts: items[items.len() - 1]
@@ -67,15 +82,68 @@ fn parse_input(input: &str) -> Vec<Machine> {
         .collect()
 }
 
-pub fn puzzle1(input: &str) -> u64 {
-    let machines = parse_input(input);
-    for m in machines.iter() {
-        m.solve();
-    }
-    1
+fn parse_2(input: &str) -> Vec<MachineB> {
+    input
+        .trim()
+        .lines()
+        .map(|line| {
+            let items = line.split(" ").collect_vec();
+            let mut target = vec![];
+
+            for ch in items[0].chars() {
+                match ch {
+                    '.' => target.push(false),
+                    '#' => target.push(true),
+                    _ => (),
+                }
+            }
+            let mut buttons = vec![];
+            for &item in &items[1..items.len() - 1] {
+                let mut button = vec![0; target.len()];
+                for x in item.trim_matches(|c| c == '(' || c == ')').split(",") {
+                    let i = x.parse::<usize>().unwrap();
+                    button[i] = 1;
+                }
+                buttons.push(button);
+            }
+
+            MachineB {
+                buttons,
+                jolts: items[items.len() - 1]
+                    .trim_matches(|c| c == '{' || c == '}')
+                    .split(",")
+                    .map(|x| x.parse().unwrap())
+                    .collect(),
+            }
+        })
+        .collect()
 }
 
-pub fn puzzle2(_input: &str) -> u64 {
+pub fn puzzle1(input: &str) -> usize {
+    parse_1(input)
+        .iter()
+        .map(|m| {
+            // It will take at most the number of lights switches to solve
+            // This is an overdetermined, commutative linear system of idempotents.
+            for i in 0..m.target.len() {
+                for subset in m.buttons.clone().into_iter().combinations(i) {
+                    if subset.into_iter().sum::<Button>().0 == m.target {
+                        return i;
+                    }
+                }
+            }
+            panic!("failed biatch")
+        })
+        .sum()
+}
+
+pub fn puzzle2(input: &str) -> u64 {
+    for m in parse_2(input).iter() {
+        // m.inspect();
+        // let x = m.solve();
+        println!("Buttons {:?}", m.buttons);
+        println!("Jolts {:?}", m.jolts);
+    }
     0
 }
 
@@ -88,11 +156,11 @@ mod tests {
 
     #[test]
     fn puzzle1() {
-        assert_eq!(super::puzzle1(SAMPLE_INPUT), 0);
+        assert_eq!(super::puzzle1(SAMPLE_INPUT), 7);
     }
 
     #[test]
     fn puzzle2() {
-        assert_eq!(super::puzzle2(SAMPLE_INPUT), 0);
+        assert_eq!(super::puzzle2(SAMPLE_INPUT), 33);
     }
 }
