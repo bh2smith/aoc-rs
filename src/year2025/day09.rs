@@ -159,8 +159,8 @@ fn point_in_polygon(poly: &[P], q: P) -> bool {
         let (ax, bx) = (a.x, b.x);
 
         // Check if edge straddles horizontal ray at q.y
-        let intersects = ((ay > q.y) != (by > q.y))
-            && (q.x < (bx - ax) * (q.y - ay) / (by - ay) + ax);
+        let intersects =
+            ((ay > q.y) != (by > q.y)) && (q.x < (bx - ax) * (q.y - ay) / (by - ay) + ax);
 
         if intersects {
             inside = !inside;

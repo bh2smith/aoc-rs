@@ -1,5 +1,7 @@
 use itertools::Itertools;
 
+use crate::util::transpose;
+
 #[derive(Clone, Copy)]
 enum Op {
     Add,
@@ -18,26 +20,6 @@ impl Problem {
             Op::Mul => self.nums.iter().copied().product(),
         }
     }
-}
-
-fn transpose<T: Clone>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> {
-    if matrix.is_empty() {
-        return vec![];
-    }
-
-    let rows = matrix.len();
-    let cols = matrix[0].len();
-
-    let mut out = vec![Vec::with_capacity(rows); cols];
-
-    for row in matrix {
-        assert_eq!(row.len(), cols, "Jagged matrix cannot be transposed");
-        for (j, val) in row.into_iter().enumerate() {
-            out[j].push(val);
-        }
-    }
-
-    out
 }
 
 fn parse_1<'a, I>(input: I) -> Vec<Vec<u64>>
