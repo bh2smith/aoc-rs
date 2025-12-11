@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+// use std::collections::HashSet;
 
 use itertools::Itertools;
 
@@ -10,7 +10,7 @@ use crate::util::transpose;
 struct Machine {
     target: Vec<bool>,
     buttons: Vec<Vec<bool>>,
-    jolts: HashSet<usize>,
+    // jolts: HashSet<usize>,
 }
 
 impl Machine {
@@ -53,15 +53,15 @@ fn parse_input(input: &str) -> Vec<Machine> {
                 }
                 buttons.push(button);
             }
-            
+
             Machine {
                 target,
                 buttons,
-                jolts: items[items.len() - 1]
-                    .trim_matches(|c| c == '{' || c == '}')
-                    .split(",")
-                    .map(|x| x.parse().unwrap())
-                    .collect(),
+                // jolts: items[items.len() - 1]
+                //     .trim_matches(|c| c == '{' || c == '}')
+                //     .split(",")
+                //     .map(|x| x.parse().unwrap())
+                //     .collect(),
             }
         })
         .collect()
@@ -75,7 +75,7 @@ pub fn puzzle1(input: &str) -> u64 {
     1
 }
 
-pub fn puzzle2(input: &str) -> u64 {
+pub fn puzzle2(_input: &str) -> u64 {
     0
 }
 

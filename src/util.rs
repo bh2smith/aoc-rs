@@ -4,7 +4,6 @@ use std::fmt::{self, Debug, Formatter};
 use std::ops::{Index, IndexMut, Neg};
 use std::str::{self, FromStr};
 
-
 pub fn transpose<T: Clone>(matrix: Vec<Vec<T>>) -> Vec<Vec<T>> {
     if matrix.is_empty() {
         return vec![];

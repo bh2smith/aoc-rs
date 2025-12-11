@@ -111,7 +111,7 @@ advent!(
         day08,
         day09,
         day10,
-        // day11,
+        day11,
         // day12,
     },
     year2023 {
